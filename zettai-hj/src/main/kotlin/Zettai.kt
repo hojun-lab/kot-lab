@@ -3,6 +3,7 @@ package com.rojojun
 import com.rojojun.domain.HtmlPage
 import com.rojojun.domain.ToDoItem
 import com.rojojun.domain.User
+import com.rojojun.function.andThen
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
@@ -17,14 +18,15 @@ class Zettai(val lists: Map<User, List<ToDoList>>) : HttpHandler {
         "/todo/{user}/{list}" bind GET to ::showList
     )
 
+    val processFun =
+        ::extractListData andThen
+        ::fetchListContent andThen
+        ::renderHtml andThen
+        ::createResponse
+
     override fun invoke(request: Request): Response = routes(request)
 
-    private fun showList(req: Request): Response =
-        req.let(::extractListData)
-            .let(::fetchListContent)
-            .let(::renderHtml)
-            .let(::createResponse)
-
+    private fun showList(req: Request): Response = processFun(req)
 
     fun extractListData(req: Request): Pair<User, ListName> {
         val user: String = req.path("user").orEmpty()
