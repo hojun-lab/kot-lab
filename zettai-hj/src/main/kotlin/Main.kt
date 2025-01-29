@@ -1,29 +1,20 @@
 package com.rojojun
 
-import org.http4k.core.*
-import org.http4k.routing.bind
-import org.http4k.routing.path
-import org.http4k.routing.routes
+import com.rojojun.domain.ToDoItem
+import com.rojojun.domain.User
+import org.http4k.core.HttpHandler
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+val logger: Logger = LoggerFactory.getLogger("main")
 
 fun main() {
-    val app: HttpHandler = routes(
-        "/todo/{user}/{list}" bind Method.GET to ::showList
-    )
+    val items = listOf("write chapter", "insert code", "draw diagram")
+    val toDoList = ToDoList(ListName("book"), items.map(::ToDoItem))
+    val lists = mapOf(User("hojun") to listOf(toDoList))
+    val app: HttpHandler = Zettai(lists)
     app.asServer(Jetty(8080)).start()
-}
-
-fun showList(req: Request): Response {
-    val user: String? = req.path("user")
-    val list: String? = req.path("list")
-    val htmlPage ="""
-        <html>
-            <body>
-                <h1>Zettai</h1>
-                <p>Here is the list <b>$list</b> of user <b>$user</b></p>
-            </body>
-        </html>
-    """
-    return Response(Status.OK).body(htmlPage)
+    logger.info("Server started at http://localhost:8080")
 }
