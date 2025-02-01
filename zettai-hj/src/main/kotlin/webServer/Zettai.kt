@@ -1,8 +1,11 @@
-package com.rojojun
+package com.rojojun.webServer
 
+import com.rojojun.ListName
+import com.rojojun.ToDoList
 import com.rojojun.domain.HtmlPage
 import com.rojojun.domain.ToDoItem
 import com.rojojun.domain.User
+import com.rojojun.domain.ZettaiHub
 import com.rojojun.function.andThen
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
@@ -13,7 +16,7 @@ import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
 
-class Zettai(val lists: Map<User, List<ToDoList>>) : HttpHandler {
+class Zettai(val hub: ZettaiHub) : HttpHandler {
     val routes = routes(
         "/todo/{user}/{list}" bind GET to ::showList
     )
@@ -35,9 +38,8 @@ class Zettai(val lists: Map<User, List<ToDoList>>) : HttpHandler {
     }
 
     fun fetchListContent(listId: Pair<User, ListName>): ToDoList =
-        lists[listId.first]
-            ?.firstOrNull { it.listName == listId.second }
-            ?:error("No list with id $listId")
+        hub.getList(listId.first, listId.second)
+            ?: error("No list with id $listId")
 
     fun renderHtml(toDoList: ToDoList): HtmlPage =
         HtmlPage("""

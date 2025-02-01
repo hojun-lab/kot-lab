@@ -1,11 +1,19 @@
 package stories
 
 import com.rojojun.domain.User
+import com.ubertob.pesticide.core.DDT
+import com.ubertob.pesticide.core.DomainDrivenTest
 import org.junit.jupiter.api.Test
-import strikt.api.expectThat
-import strikt.assertions.isEqualTo
-import tooling.ApplicationForAT
+import tooling.ZettaiActions
 import tooling.startTheApplication
+
+typealias ZettaiDDT = DomainDrivenTest<ZettaiActions>
+
+fun allActions() = setOf(
+    DomainOnlyActions(),
+    HttsActions()
+)
+
 
 class SeeATodoListAT {
     val frank = ToDoListOwner("Frank")
@@ -22,6 +30,16 @@ class SeeATodoListAT {
     )
 
     private fun ToDoListOwner.asUser(): User = User(name)
+
+    @DDT
+    fun `TODO 리스트의 주인은 리스트를 확인 할 수 있다 - DDT`() = ddtScenario {
+        val app = startTheApplication(lists)
+        app.runScenario (
+            frank.`리스트를 볼 수 있다`("shopping", shoppingItems),
+            bob.`리스트를 볼 수 있다`("gardening", gardenItems)
+        )
+    }
+
 
     @Test
     fun `TODO 리스트의 주인은 리스트를 확인 할 수 있다`() {

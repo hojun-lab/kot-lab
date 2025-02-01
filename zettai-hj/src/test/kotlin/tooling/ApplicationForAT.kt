@@ -2,7 +2,7 @@ package tooling;
 
 import com.rojojun.ListName
 import com.rojojun.ToDoList
-import com.rojojun.Zettai
+import com.rojojun.webServer.Zettai
 import com.rojojun.domain.ToDoItem
 import com.rojojun.domain.User
 import org.http4k.client.JettyClient
@@ -12,7 +12,7 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import kotlin.test.fail
 
-class ApplicationForAT(val client: HttpHandler, val server: AutoCloseable): Actions {
+class ApplicationForAT(val client: HttpHandler, val server: AutoCloseable): ZettaiActions {
     override fun getToDoList(user: String, listName: String): ToDoList {
         val response = client(Request(Method.GET, "/todo/$user/$listName"))
 
