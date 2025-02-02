@@ -4,7 +4,6 @@ import com.rojojun.ListName
 import com.rojojun.ToDoList
 import com.rojojun.domain.ToDoListHub
 import com.rojojun.domain.User
-import com.rojojun.webServer.Zettai
 import com.ubertob.pesticide.core.*
 import org.http4k.client.JettyClient
 import org.http4k.core.Method

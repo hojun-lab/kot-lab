@@ -14,6 +14,7 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import webServer.Routes
 import java.time.LocalDate
 
 val logger: Logger = LoggerFactory.getLogger("main")
@@ -27,7 +28,7 @@ fun main() {
 //    val lists = mapOf(User("hojun") to listOf(toDoList))
 //    val app: HttpHandler = Zettai(lists)
 
-    Zettai(hub = hub).asServer(Jetty(8080)).start()
+    Routes(hub = hub).asServer(Jetty(8080)).start()
     logger.info("Server started at http://localhost:8080")
 }
 

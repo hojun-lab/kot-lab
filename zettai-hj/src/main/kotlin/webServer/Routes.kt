@@ -5,13 +5,8 @@ import com.rojojun.ToDoList
 import com.rojojun.domain.ToDoItem
 import com.rojojun.domain.User
 import com.rojojun.domain.ZettaiHub
-import com.rojojun.function.andThen
 import com.sun.net.httpserver.HttpExchange
-import com.sun.net.httpserver.HttpHandler
-import org.http4k.core.Method
-import org.http4k.core.Request
-import org.http4k.core.Response
-import org.http4k.core.Status
+import org.http4k.core.*
 import org.http4k.core.body.form
 import org.http4k.routing.bind
 import org.http4k.routing.path
@@ -27,7 +22,7 @@ class Routes(val hub: ZettaiHub) : HttpHandler {
         "/todo/{user}/{listname}" bind Method.POST to ::addNewItem
     )
 
-    fun invoke(request: Request) = httpHandler(request)
+    override fun invoke(request: Request) = httpHandler(request)
 
     private fun getToDoList(request: Request): Response {
         val user = request.path("user").orEmpty().let(::User)
@@ -60,8 +55,4 @@ class Routes(val hub: ZettaiHub) : HttpHandler {
 
     fun toResponse(htmlPage: HtmlPage): Response =
         Response(Status.OK).body(htmlPage.raw)
-
-    override fun handle(exchange: HttpExchange?) {
-        TODO("Not yet implemented")
-    }
 }

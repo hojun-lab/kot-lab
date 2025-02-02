@@ -2,7 +2,6 @@ package tooling;
 
 import com.rojojun.ListName
 import com.rojojun.ToDoList
-import com.rojojun.webServer.Zettai
 import com.rojojun.domain.ToDoItem
 import com.rojojun.domain.User
 import org.http4k.client.JettyClient
