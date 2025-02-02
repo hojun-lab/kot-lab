@@ -14,7 +14,8 @@ class DomainOnlyActions() : ZettaiActions {
 
     private val lists: Map<User, List<ToDoList>> = emptyMap();
 
-    private val hub = ToDoListHub(list)
+//    예제에서는 list
+    private val hub = ToDoListHub(lists)
 
     override fun getToDoList(user: User, listName: ListName): ToDoList? =
         hub.getList(user, listName)

@@ -2,17 +2,15 @@ package stories
 
 import com.rojojun.domain.User
 import com.ubertob.pesticide.core.DDT
-import com.ubertob.pesticide.core.DomainDrivenTest
 import org.junit.jupiter.api.Test
-import tooling.ZettaiActions
 import tooling.startTheApplication
 
-typealias ZettaiDDT = DomainDrivenTest<ZettaiActions>
-
-fun allActions() = setOf(
-    DomainOnlyActions(),
-    HttsActions()
-)
+//typealias ZettaiDDT = DomainDrivenTest<ZettaiActions>
+//
+//fun allActions() = setOf(
+//    DomainOnlyActions(),
+//    HttsActions()
+//)
 
 
 class SeeATodoListAT {
