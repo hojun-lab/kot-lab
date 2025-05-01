@@ -2,31 +2,28 @@ package rojojun
 
 import org.http4k.core.*
 import org.http4k.routing.bind
+import org.http4k.routing.path
 import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 
-const val htmlPage = """
-    <html>
-        <body>
-            <h1 style="text-align:center; font-size:3em;">
-            Hello Functional World
-            </h1>
-        </body>
-    </html>
-"""
-
-val app: HttpHandler = routes(
-    "/greetings" bind Method.GET to ::greetings,
-    "/data" bind Method.POST to ::receiveData
-)
-
-fun greetings(req: Request): Response = Response(Status.OK)
-    .body(htmlPage)
-
-fun receiveData(req: Request): Response = Response(Status.CREATED)
-    .body("Received: ${req.bodyString()}")
-
 fun main() {
+    val app: HttpHandler = routes(
+        "/todo/{user}/{list}" bind Method.GET to ::showList
+    )
     app.asServer(Jetty(8080)).start()
+}
+
+fun showList(request: Request): Response {
+    val user: String? = request.path("user")
+    val list: String? = request.path("list")
+    val htmlPage = """
+        <html>
+            <body>
+                <h1>Zettai</h1>
+                <p>Here is the list<b>$list</b>of user<b>$user</b></P>
+            </body>
+        </html>
+    """
+    return Response(Status.OK).body(htmlPage);
 }
