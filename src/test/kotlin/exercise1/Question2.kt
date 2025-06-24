@@ -1,9 +1,9 @@
-package exercise1
-
-class CashRegister(
-    val products: Map<String, Double>,
-    val promotion: Map<String, String>
-)
+//package exercise1
+//
+//class CashRegister(
+//    val products: Map<String, Double>,
+//    val promotion: Map<String, String>
+//)
 //    fun checkout(items: List<String>): Double {
 //        return items.groupingBy { it }
 //            .eachCount()
@@ -26,5 +26,7 @@ class CashRegister(
 //            }
 //    }
 //}
-
-//class Question2
+//
+class Question2 {
+// TODO 6월 29일까지 구현
+}
