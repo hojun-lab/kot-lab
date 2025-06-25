@@ -4,6 +4,7 @@ import org.http4k.core.*
 import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
+import rojojun.function.andThen
 
 data class Zattai(val lists: Map<User,List<ToDoList>>): HttpHandler {
     val routes = routes(
@@ -12,11 +13,12 @@ data class Zattai(val lists: Map<User,List<ToDoList>>): HttpHandler {
 
     override fun invoke(request: Request): Response = routes(request)
 
-    private fun showList(req: Request): Response =
-        req.let(::extractListData)
-            .let(::fetchListContent)
-            .let(::renderHtml)
-            .let(::createResponse)
+    val processFun = ::extractListData andThen
+            ::fetchListContent andThen
+            ::renderHtml andThen
+            ::createResponse
+
+    private fun showList(req: Request): Response = processFun(req)
 
     fun extractListData(request: Request): Pair<User, ListName> {
         val user: String = request.path("user").orEmpty()

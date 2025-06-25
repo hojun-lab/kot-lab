@@ -51,7 +51,11 @@ class SeeATodoListAT {
     private fun extractItemDesc(matchResult: MatchResult): String =
         matchResult.value.substringAfter("<td>").dropLast(1)
 
-    private fun startApplication(user: String, listName: String, items: List<String>) {
+    private fun startApplication(
+        user: String,
+        listName: String,
+        items: List<String>
+    ) {
         val toDoList = ToDoList(ListName(listName), items.map(::ToDoItem))
         val lists = mapOf(User(user) to listOf(toDoList))
         val server = Zattai(lists).asServer(Jetty(8081))
