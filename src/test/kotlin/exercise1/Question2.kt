@@ -3,7 +3,11 @@
 class CashRegister(
     val products: Map<String, Double>,
     val promotion: Map<String, String>
-)
+) {
+    fun checkout() {
+
+    }
+}
 //    fun checkout(items: List<String>): Double {
 //        return items.groupingBy { it }
 //            .eachCount()
