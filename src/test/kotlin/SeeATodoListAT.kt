@@ -28,28 +28,25 @@ class SeeATodoListAT {
             "http://localhost:8081/todo/$user/$listName")
         val response = client(request)
         return if (response.status == Status.OK)
-            parseResponse(response.toString())
+            parseResponse(response.bodyString())
         else
             fail(response.toMessage())
     }
 
     fun parseResponse(html: String): ToDoList {
-        val nameRegex = "<h2>.*<".toRegex()
+        val nameRegex = "<h2>(.*?)</h2>".toRegex(RegexOption.DOT_MATCHES_ALL)
         val listName = ListName(extractListName(nameRegex, html))
-        val itemRegex = "<td>.*?<".toRegex()
+        val itemRegex = "<td>\\s*(.*?)\\s*</td>".toRegex(RegexOption.DOT_MATCHES_ALL)
         val items = itemRegex.findAll(html)
             .map { ToDoItem(extractItemDesc(it)) }.toList()
         return ToDoList(listName, items)
     }
 
     private fun extractListName(nameRegex: Regex, html: String): String =
-        nameRegex.find(html)?.value
-            ?.substringAfter("<h2>")
-            ?.dropLast(1)
-            .orEmpty()
+        nameRegex.find(html)?.groupValues?.get(1)?.trim().orEmpty()
 
     private fun extractItemDesc(matchResult: MatchResult): String =
-        matchResult.value.substringAfter("<td>").dropLast(1)
+        matchResult.groupValues[1].trim()
 
     private fun startApplication(
         user: String,
