@@ -1,61 +1,37 @@
-import org.http4k.client.JettyClient
-import org.http4k.core.Method
-import org.http4k.core.Request
-import org.http4k.core.Status
-import org.http4k.server.Jetty
-import org.http4k.server.asServer
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
-import rojojun.*
-import strikt.api.expectThat
-import strikt.assertions.isEqualTo
+import rojojun.User
 
 class SeeATodoListAT {
+    val frank = ToDoListOwner("Frank")
+    val shoppingItems = listOf("당근", "사과", "우유")
+    val frankList = createList("shopping", shoppingItems)
+
+    val bob = ToDoListOwner("Bob")
+    val gardenItems = listOf("펜스 고치기", "잡초 고르기")
+    val bobList = createList("gardening", gardenItems)
+
+    val lists = mapOf(
+        frank.asUser() to listOf(frankList),
+        bob.asUser() to listOf(bobList),
+    )
+
+    fun ToDoListOwner.asUser(): User = User(name)
+
     @Test
     fun `리스트의 주인은 본인의 리스트를 볼 수 있다`() {
-        val user = "frank"
-        val listName = "shopping"
-        val foodToBuy = listOf("당근", "사과", "우유")
-        startApplication(user, listName, foodToBuy)
-        val list = getToList(user, listName)
-        expectThat(list.listName.name).isEqualTo(listName)
-        expectThat(list.items.map { it.description }).isEqualTo(foodToBuy)
+        val app = startTheApplication(lists)
+        app.runScenario(
+            frank.canSeeTheList("shopping", shoppingItems),
+            bob.canSeeTheList("gardening", gardenItems)
+        )
     }
 
-    fun getToList(user: String, listName: String): ToDoList {
-        val client = JettyClient()
-        val request = Request(Method.GET,
-            "http://localhost:8081/todo/$user/$listName")
-        val response = client(request)
-        return if (response.status == Status.OK)
-            parseResponse(response.bodyString())
-        else
-            fail(response.toMessage())
-    }
-
-    fun parseResponse(html: String): ToDoList {
-        val nameRegex = "<h2>(.*?)</h2>".toRegex(RegexOption.DOT_MATCHES_ALL)
-        val listName = ListName(extractListName(nameRegex, html))
-        val itemRegex = "<td>\\s*(.*?)\\s*</td>".toRegex(RegexOption.DOT_MATCHES_ALL)
-        val items = itemRegex.findAll(html)
-            .map { ToDoItem(extractItemDesc(it)) }.toList()
-        return ToDoList(listName, items)
-    }
-
-    private fun extractListName(nameRegex: Regex, html: String): String =
-        nameRegex.find(html)?.groupValues?.get(1)?.trim().orEmpty()
-
-    private fun extractItemDesc(matchResult: MatchResult): String =
-        matchResult.groupValues[1].trim()
-
-    private fun startApplication(
-        user: String,
-        listName: String,
-        items: List<String>
-    ) {
-        val toDoList = ToDoList(ListName(listName), items.map(::ToDoItem))
-        val lists = mapOf(User(user) to listOf(toDoList))
-        val server = Zattai(lists).asServer(Jetty(8081))
-        server.start()
+    @Test
+    fun `자신의 리스트만 볼 수 있다`() {
+        val app = startTheApplication(lists)
+        app.runScenario(
+            frank.cannotSeeTheList("gardening"),
+            bob.cannotSeeTheList("shopping")
+        )
     }
 }
