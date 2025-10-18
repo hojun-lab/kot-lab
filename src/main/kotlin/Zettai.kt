@@ -6,7 +6,7 @@ import org.http4k.routing.path
 import org.http4k.routing.routes
 import rojojun.function.andThen
 
-data class Zattai(val lists: Map<User,List<ToDoList>>): HttpHandler {
+data class Zettai(/*val lists: Map<User,List<ToDoList>>*/ val hub: ZettaiHub): HttpHandler {
     val routes = routes(
         "/todo/{user}/{list}" bind Method.GET to ::showList
     )
@@ -25,9 +25,9 @@ data class Zattai(val lists: Map<User,List<ToDoList>>): HttpHandler {
         val list: String = request.path("list").orEmpty()
         return User(user) to ListName(list)
     }
+
     fun fetchListContent(listId: Pair<User, ListName>): ToDoList =
-        lists[listId.first]
-            ?.firstOrNull { it.listName == listId.second }
+        hub.getList(listId.first, listId.second)
             ?: error("알 수 없는 리스트입니다.")
 
     fun renderHtml(list: ToDoList): HtmlPage = HtmlPage(

@@ -32,6 +32,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.9")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("com.ubertob.pesticide:pesticide-core:1.6.6")
 }
 
 tasks.test {
