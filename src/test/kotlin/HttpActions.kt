@@ -16,7 +16,8 @@ import rojojun.User
 import rojojun.Zettai
 
 class HttpActions(val env: String = "local"): ZettaiActions {
-    private val hub = ToDoListHub(mutableMapOf())
+    private val lists: MutableMap<User, List<ToDoList>> = mutableMapOf()
+    private val hub = ToDoListHub(lists)
 
     override val protocol: DdtProtocol = Http(env)
 
@@ -35,15 +36,16 @@ class HttpActions(val env: String = "local"): ZettaiActions {
     private fun callZettai(method: Method, path: String): Response =
         client(log(Request(method, "http://localhost:$zettaiPort/$path")))
 
-    override fun getToDoList(user: User, listName: ListName): ToDoList? {
-        TODO("Not yet implemented")
-    }
+    override fun getToDoList(user: User, listName: ListName): ToDoList? =
+        hub.getList(user, listName)
 
     override fun ToDoListOwner.`리스트를 가지고 유저를 생성`(
         listName: String,
         items: List<String>
     ) {
-        TODO("Not yet implemented")
+        val todoList = createList(listName, items)
+        val existingLists = lists[user] ?: emptyList()
+        lists[user] = existingLists + todoList
     }
 
     fun <T> log(something: T): T {

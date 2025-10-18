@@ -18,10 +18,12 @@ class DomainOnlyActions(): ZettaiActions {
         listName: String,
         items: List<String>
     ) {
-        TODO("Not yet implemented")
+        val todoList = createList(listName, items)
+        val existingLists = lists[user] ?: emptyList()
+        lists[user] = existingLists + todoList
     }
 
-    private val lists: Map<User, List<ToDoList>> = emptyMap()
+    private val lists: MutableMap<User, List<ToDoList>> = mutableMapOf()
 
     private val hub = ToDoListHub(lists)
 }
