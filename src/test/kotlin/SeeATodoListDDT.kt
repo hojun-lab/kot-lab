@@ -28,4 +28,15 @@ class SeeATodoListDDT: ZettaiDDT(allActions()) {
             bob.`#listnames 의 #listname 을 볼 수 있다`(gardeningListName, gardenItems)
         )
     }
+
+    @DDT
+    fun `리스트의 주인만 본인의 리스트를 볼 수 있다`() = ddtScenario {
+        setUp {
+            frank.`리스트를 가지고 유저를 생성`(shoppingListName, shoppingItems)
+            bob.`리스트를 가지고 유저를 생성`(gardeningListName, gardenItems)
+        }.thenPlay(
+            frank.`cannot see #listname`(gardeningListName),
+            bob.`cannot see #listname`(shoppingListName)
+        )
+    }
 }

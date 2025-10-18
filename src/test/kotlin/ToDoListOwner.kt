@@ -1,16 +1,13 @@
 import com.ubertob.pesticide.core.DdtActor
-import org.opentest4j.AssertionFailedError
 import rojojun.ListName
 import rojojun.ToDoItem
 import rojojun.ToDoList
 import rojojun.User
 import strikt.api.Assertion
 import strikt.api.expectThat
-import strikt.api.expectThrows
-import strikt.assertions.all
 import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.isEqualTo
 import strikt.assertions.isNotNull
+import strikt.assertions.isNull
 
 //class ToDoListOwner(override val name: String) : ScenarioActor {
 //    fun canSeeTheList(listName: String, items: List<String>, app : ApplicationForAT) {
@@ -48,6 +45,11 @@ class ToDoListOwner(override val name: String) : DdtActor<ZettaiActions>() {
                 .itemNames
                 .containsExactlyInAnyOrder(expectedItems)
         }
+
+    fun `cannot see #listname`(listName: String) = step(listName) {
+        val list = getToDoList(user, ListName.fromUntrustedOrThrow(listName))
+        expectThat(list).isNull()
+    }
 
     private val Assertion.Builder<ToDoList>.itemNames
             get() = get { items.map { it.description } }
