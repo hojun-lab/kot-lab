@@ -9,30 +9,6 @@ import strikt.assertions.containsExactlyInAnyOrder
 import strikt.assertions.isNotNull
 import strikt.assertions.isNull
 
-//class ToDoListOwner(override val name: String) : ScenarioActor {
-//    fun canSeeTheList(listName: String, items: List<String>, app : ApplicationForAT) {
-//        val expectedList = createList(listName, items)
-//        val list = app.getToDoList(name, listName)
-//        expectThat(list).isEqualTo(expectedList)
-//    }
-//
-//    fun canSeeTheList(listName: String, items: List<String>): Step = {
-//        val expectedList = createList(listName, items)
-////        expectThat(items).isEqualTo(expectedList)
-//    }
-//
-//
-//    fun cannotSeeTheList(listName: String): Step = {
-//        expectThrows<AssertionFailedError> {
-//            getToDoList(name, listName)
-//        }
-//    }
-//
-//    private fun getToDoList(name: String, listName: String): ToDoList {
-//        TODO("Not yet implemented")
-//    }
-//}
-
 class ToDoListOwner(override val name: String) : DdtActor<ZettaiActions>() {
     val user = User(name)
 
